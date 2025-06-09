@@ -435,6 +435,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function sendWelcomeEmail(to: string) {
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM!,
+    to,
+    subject: 'Welcome to InstaLanding AI 🚀',
+    html: `<strong>Your empire awaits. Let's build it!</strong>`,
+  });
+}
+
 tsx
 Copy
 Edit
