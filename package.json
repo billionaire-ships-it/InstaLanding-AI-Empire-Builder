@@ -1,2 +1,2 @@
-cd InstaLanding-AI-Empire-Builer
-npm install resend
+cd InstaLanding-AI-Empire-Builder
+npm install clsx lucide-react next-auth bcryptjs uuid resend zod react-hook-form @hookform/resolvers zustand framer-motion @headlessui/react @heroicons/react
