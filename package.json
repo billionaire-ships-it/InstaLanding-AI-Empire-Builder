@@ -1,2 +1,30 @@
-cd InstaLanding-AI-Empire-Builder
-npm install clsx lucide-react next-auth bcryptjs uuid resend zod react-hook-form @hookform/resolvers zustand framer-motion @headlessui/react @heroicons/react
+{
+  "name": "instalanding-ai",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "clsx": "^1.2.1",
+    "lucide-react": "^0.287.0",
+    "next": "14.0.4",
+    "next-auth": "^4.24.5",
+    "pdfkit": "^0.13.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "resend": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/pdfkit": "^0.13.9",
+    "@types/react": "^19.1.7",
+    "@types/react-dom": "^19.1.6",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^4.1.8"
+  }
+}
