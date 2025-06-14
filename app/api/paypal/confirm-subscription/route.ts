@@ -12,45 +12,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { subscriptionID } = await req.json();
-    if (!subscriptionID) {
+    const body = await req.json();
+    const subscriptionId = body.subscriptionID || body.subscriptionId;
+
+    if (!subscriptionId) {
       return NextResponse.json({ error: "Subscription ID is required" }, { status: 400 });
     }
 
-    // Update user record in the database
+    // Update user in the DB
     await prisma.user.update({
       where: { email: session.user.email },
       data: {
+        isPaid: true,
         subscriptionActive: true,
-        subscriptionId: subscriptionID,
+        subscriptionId,
         subscriptionActivatedAt: new Date(),
       },
     });
 
-    return NextResponse.json({ message: "Subscription confirmed" });
+    return NextResponse.json({ message: "Subscription confirmed and access granted" });
   } catch (error) {
     console.error("Error confirming subscription:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
-
-export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
-  const { subscriptionId } = await req.json();
-
-  if (!session?.user?.email || !subscriptionId) {
-    return NextResponse.json({ error: "Unauthorized or invalid" }, { status: 401 });
-  }
-
-  // ✅ Set isPaid = true in the DB
-  await db.user.update({
-    where: { email: session.user.email },
-    data: {
-      isPaid: true,
-      subscriptionId,
-    },
-  });
-
-  return NextResponse.json({ success: true });
-}
-
