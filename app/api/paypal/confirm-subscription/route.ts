@@ -1,25 +1,25 @@
 // File: app/api/paypal/confirm-subscription/route.ts
 
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession({ req }, authOptions);
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
-    const subscriptionId = body.subscriptionID || body.subscriptionId;
+    const subscriptionId = body.subscriptionId || body.subscriptionID;
 
     if (!subscriptionId) {
-      return NextResponse.json({ error: "Subscription ID is required" }, { status: 400 });
+      return NextResponse.json({ error: "Missing subscription ID" }, { status: 400 });
     }
 
-    // Update user in the DB
     await prisma.user.update({
       where: { email: session.user.email },
       data: {
@@ -30,9 +30,11 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ message: "Subscription confirmed and access granted" });
+    return NextResponse.json({ message: "✅ Subscription confirmed. Access granted." });
   } catch (error) {
-    console.error("Error confirming subscription:", error);
+    console.error("PayPal confirm-subscription error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+

@@ -1,22 +1,12 @@
 // File: app/api/generate-copy/route.ts
-export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
 
-  if (!session?.user?.id) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import authOptions from "@/lib/auth";
+import { checkUserAccess } from "@/lib/checkAccess";
+import { OpenAI } from "openai";
 
-  const hasAccess = await checkUserAccess(session.user.id);
-
-  if (!hasAccess) {
-    return new Response("Trial expired or unpaid", { status: 403 });
-  }
-
-
-import { OpenAI } from 'openai';
-import { NextResponse } from 'next/server';
-
-export const runtime = 'edge';
+export const runtime = "edge";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -24,49 +14,65 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { businessName, targetAudience, offer, transformation } = await req.json();
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  if (!businessName || !targetAudience || !offer || !transformation) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-  }
+    const hasAccess = await checkUserAccess(session.user.email);
+    if (!hasAccess) {
+      return NextResponse.json({ error: "Trial expired or unpaid" }, { status: 403 });
+    }
 
-  const prompt = `
-Write high-converting landing page copy using Sabri Suby style.
+    const { businessName, targetAudience, offer, transformation } = await req.json();
+
+    if (!businessName || !targetAudience || !offer || !transformation) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    const prompt = `
+You are a master direct-response marketer trained in Sabri Suby's methods. Create a highly persuasive landing page copy that includes a strong headline, emotional subheadline, pain-point focused section, irresistible offer, transformation benefits, and urgency-inducing call to action.
+
 Business Name: ${businessName}
 Target Audience: ${targetAudience}
 Offer: ${offer}
 Transformation: ${transformation}
-Include: Headline, Subheadline, Pain Points, Offer, Benefits, CTA.
+
+Make the tone urgent, confident, and conversion-focused.
 `;
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4',
-    stream: true,
-    messages: [
-      { role: 'system', content: 'You are a top-tier copywriter' },
-      { role: 'user', content: prompt },
-    ],
-  });
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      stream: true,
+      messages: [
+        { role: "system", content: "You are a world-class direct-response copywriter inspired by Sabri Suby." },
+        { role: "user", content: prompt },
+      ],
+    });
 
-  const encoder = new TextEncoder();
+    const encoder = new TextEncoder();
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      for await (const chunk of response) {
-        const content = chunk.choices?.[0]?.delta?.content;
-        if (content) {
-          controller.enqueue(encoder.encode(content));
+    const stream = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of response) {
+          const content = chunk.choices?.[0]?.delta?.content;
+          if (content) {
+            controller.enqueue(encoder.encode(content));
+          }
         }
-      }
-      controller.close();
-    },
-  });
+        controller.close();
+      },
+    });
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-    },
-  });
-}}
+    return new Response(stream, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+  } catch (err) {
+    console.error("generate-copy error:", err);
+    return NextResponse.json({ error: "Failed to generate copy" }, { status: 500 });
+  }
+}
+
 
 

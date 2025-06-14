@@ -1,34 +1,34 @@
-// app/api/ai/generate-page/route.ts
-export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const hasAccess = await checkUserAccess(session.user.id);
-
-  if (!hasAccess) {
-    return new Response("Trial expired or unpaid", { status: 403 });
-  }
-
+// File: app/api/ai/generate-page/route.ts
 
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import authOptions from "@/lib/auth"; // fallback import
+import { checkUserAccess } from "@/lib/checkAccess";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { prompt } = await request.json();
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const hasAccess = await checkUserAccess(session.user.email);
+    if (!hasAccess) {
+      return NextResponse.json({ error: "Trial expired or unpaid" }, { status: 403 });
+    }
+
+    const { prompt } = await req.json();
 
     if (!prompt || prompt.trim().length === 0) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
     }
 
-    // Detailed system prompt for high-quality landing page generation
     const systemPrompt = `
 You are an expert front-end developer specialized in creating clean, modern, responsive landing pages using Tailwind CSS. 
 Generate a full HTML landing page with:
@@ -44,7 +44,7 @@ The user will provide a description of their product or service. Use that descri
 `;
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt },
@@ -57,9 +57,7 @@ The user will provide a description of their product or service. Use that descri
 
     return NextResponse.json({ html });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to generate page" },
-      { status: 500 }
-    );
+    console.error("Page generation error:", error);
+    return NextResponse.json({ error: "Failed to generate page" }, { status: 500 });
   }
-}}
+}
