@@ -1,4 +1,4 @@
-import "@/app/globals.css";
+import "../globals.css"; // ✅ This is correct path relative to layout.tsx
 import { ReactNode } from "react";
 import { getServerSession } from "next-auth";
 import authOptions from "@/lib/auth";

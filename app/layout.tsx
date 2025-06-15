@@ -1,5 +1,5 @@
 // app/layout.tsx
-import "@/globals.css";
+import "../globals.css"; // ✅ This is correct path relative to layout.tsx
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
