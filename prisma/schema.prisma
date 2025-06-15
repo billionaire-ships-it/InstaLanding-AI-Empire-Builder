@@ -18,7 +18,8 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   image              String?
-  
+  subscriptionId           String? 
+  subscriptionActivatedAt  DateTime? 
   
 
   // Subscription system
