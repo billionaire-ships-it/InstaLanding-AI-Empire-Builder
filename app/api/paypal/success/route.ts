@@ -1,9 +1,9 @@
 // /app/api/paypal/success/route.ts
 
-import { NextResponse } from "next/server";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/db";
+import  NextResponse  from "next/server";
+import  authOptions  from "@/lib/auth";
+import  getServerSession  from "next-auth";
+import  prisma  from "@/lib/db";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
