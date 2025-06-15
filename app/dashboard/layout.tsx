@@ -1,6 +1,7 @@
+import "@/app/globals.css";
 import { ReactNode } from "react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/auth";
+import authOptions from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
@@ -36,7 +37,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 function LogoutButton() {
   async function logout() {
     "use server";
-    // next-auth signOut logic here
+    // TODO: add next-auth signOut() call here
   }
 
   return (

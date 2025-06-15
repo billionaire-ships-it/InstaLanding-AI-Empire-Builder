@@ -1,4 +1,5 @@
-// lib/auth.ts
+// File: lib/auth.ts
+
 import type { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
@@ -20,7 +21,6 @@ const authOptions: AuthOptions = {
 
         const user = await User.findOne({ email: credentials.email });
         if (!user) {
-          // Return null for invalid login instead of throwing
           return null;
         }
 
@@ -39,20 +39,6 @@ const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export default authOptions;async; signIn({ user }) ;{
-  const existingUser = await prisma.user.findUnique({ where: { email: user.email! } });
+export default authOptions;
 
-  if (!existingUser) {
-    await prisma.user.create({
-      data: {
-        email: user.email!,
-        name: user.name,
-        image: user.image,
-        isPaid: false,
-        subscribedAt: new Date(), // Start trial
-      },
-    });
-  }
 
-  return true;
-}
