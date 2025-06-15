@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Optional custom styles */
+html, body {
+  @apply bg-white text-black;
+  font-family: Inter, sans-serif;
+}
+
