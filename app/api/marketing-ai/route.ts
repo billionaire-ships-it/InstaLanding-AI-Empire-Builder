@@ -6,8 +6,6 @@ import authOptions from "@/lib/auth";
 import { checkUserAccess } from "@/lib/checkAccess";
 import { OpenAI } from "openai";
 
-export const runtime = "edge";
-
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   dangerouslyAllowBrowser: false,
@@ -73,6 +71,3 @@ Make the tone urgent, confident, and conversion-focused.
     return NextResponse.json({ error: "Failed to generate copy" }, { status: 500 });
   }
 }
-
-
-
