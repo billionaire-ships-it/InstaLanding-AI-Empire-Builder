@@ -10,6 +10,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "@prisma/client": "^5.7.1",
     "aws4": "^1.13.2",
     "bcrypt": "^5.1.1",
@@ -27,6 +28,7 @@
     "resend": "^4.5.2 "
   },
   "devDependencies": {
+    "@types/paypal__checkout-server-sdk": "^1.0.8",
     "@types/react": "^19.1.8",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.5",
