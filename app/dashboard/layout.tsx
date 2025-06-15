@@ -1,4 +1,4 @@
-import "../globals.css"; // ✅ This is correct path relative to layout.tsx
+import "../../globals.css";
 import { ReactNode } from "react";
 import { getServerSession } from "next-auth";
 import authOptions from "@/lib/auth";
@@ -33,11 +33,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   );
 }
 
-// Logout button component
 function LogoutButton() {
   async function logout() {
     "use server";
-    // TODO: add next-auth signOut() call here
+    // TODO: add next-auth signOut logic here
   }
 
   return (
