@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import  authOptions  from "@/lib/auth";
-import { db } from "@/lib/db"; // use your DB client
+import  db  from "@/lib/db"; // use your DB client
 
 export async function getExtendedUserSession() {
   const session = await getServerSession(authOptions);
