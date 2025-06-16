@@ -21,6 +21,7 @@ model User {
   subscribedAt            DateTime?
   subscriptionId           String? 
   subscriptionActivatedAt  DateTime? 
+  trialEnd   DateTime?
   
 
   // Subscription system
