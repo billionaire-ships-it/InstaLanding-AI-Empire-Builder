@@ -1,22 +1,23 @@
-// components/ToolCard.tsx
 import Link from "next/link";
 
-export default function ToolCard({
+function ToolCard({
   title,
   description,
-  link,
+  href,
 }: {
   title: string;
   description: string;
-  link: string;
+  href: string;
 }) {
   return (
-    <Link href={link}>
-      <div className="border rounded-2xl p-4 shadow hover:shadow-lg transition bg-white">
-        <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="text-sm text-gray-500 mt-1">{description}</p>
-      </div>
+    <Link
+      href={href}
+      className="bg-white border border-gray-200 rounded-2xl p-6 shadow hover:shadow-lg transition block"
+    >
+      <h2 className="text-xl font-bold text-gray-800 mb-2">{title}</h2>
+      <p className="text-sm text-gray-600">{description}</p>
     </Link>
   );
 }
+
  
